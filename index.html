@@ -4,12 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GIPHY Search Engine</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <header>
+      <section id="header-block">
+        <div class="logo"><img src="TODO" alt="GIPHY Logo" /><!-- TODO --></div>
+        <div class="header-buttons">
+          <button id="js-categories-button" class="header-button">
+            Categories
+          </button>
+          <button id="js-featured-button" class="header-button">
+            Featured
+          </button>
+        </div>
+      </section>
+      <section id="header-menu">
+        <div class="category-container js-category-container">
+          <ul id="js-category-list" class="category-list"></ul>
+        </div>
+      </section>
+    </header>
     <h1>Search</h1>
-    <section class="category-container js-category-container">
-      <ul id="category-list"></ul>
-    </section>
     <script src="searchEngine.js"></script>
   </body>
 </html>
