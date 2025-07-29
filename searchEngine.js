@@ -1,5 +1,7 @@
 const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 
+// ##Categories Dropdown
+
 const categoriesButton = document.getElementById("js-categories-button");
 categoriesButton.addEventListener("click", fetchCategories);
 
@@ -54,4 +56,39 @@ async function fetchCategories() {
     } catch (error) {
         console.error("Error fetching categories:", error);
     }
+}
+
+// ##Search Bar
+
+const searchButton = document.getElementById("js-search-button");
+const searchBar = document.getElementById("js-search-bar");
+const resultsContainer = document.getElementById("js-results");
+
+searchButton.addEventListener("click", () => {
+    const query = searchBar.value.trim();
+    if (query) {
+        searchGifs(query);
+    }
+});
+
+async function searchGifs(query) {
+    try {
+        const response = await fetch(
+            `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=50`
+        );
+        const data = await response.json();
+        displayResults(data.data);
+    } catch (error) {
+        console.error("Error fetching search results:", error);
+    }
+}
+
+function displayResults(gifs) {
+    resultsContainer.innerHTML = ""; // Clear previous results
+    gifs.forEach((gif) => {
+        const img = document.createElement("img");
+        img.src = gif.images.fixed_height.url;
+        img.alt = gif.title;
+        resultsContainer.appendChild(img);
+    });
 }
