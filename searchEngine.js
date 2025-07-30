@@ -5,57 +5,77 @@ const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 const categoriesButton = document.getElementById("js-categories-button");
 categoriesButton.addEventListener("click", fetchCategories);
 
+let cachedCategories = null;
 let categoriesVisible = false;
 
 async function fetchCategories() {
     const list = document.getElementById("js-category-list");
 
-    // Toggle visibility
+    // Toggle off
     if (categoriesVisible) {
         list.innerHTML = "";
         categoriesVisible = false;
         return;
     }
 
-    try {
-        const data = await fetch(
-            `https://api.giphy.com/v1/gifs/categories?api_key=${apiKey}`
-        );
-        const response = await data.json();
-        const categories = response.data;
+    // Fetch and cache if not already done
+    if (!cachedCategories) {
+        try {
+            const data = await fetch(
+                `https://api.giphy.com/v1/gifs/categories?api_key=${apiKey}`
+            );
+            const response = await data.json();
+            cachedCategories = response.data;
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+            return;
+        }
+    }
 
-        // Categories Container
-        categories.forEach((cat) => {
-            const item = document.createElement("li");
-            item.textContent = cat.name;
-            item.classList.add("category-item");
+    // Render from cache
+    renderCategories(cachedCategories);
+    categoriesVisible = true;
+}
 
-            // Subcategories Container
-            const subList = document.createElement("ul");
-            subList.style.display = "none";
-            subList.classList.add("subcategory-list");
 
-            cat.subcategories.forEach((sub) => {
-                const subItem = document.createElement("li");
-                subItem.textContent = sub.name;
-                subList.appendChild(subItem);
-                subItem.classList.add("subcategory-list-item");  //inprog
-            });
+// Render from cache
+function renderCategories(categories) {
+    const list = document.getElementById("js-category-list");
 
-            // Toggle subcategories on click
-            item.addEventListener("click", () => {
-                subList.style.display =
-                    subList.style.display === "none" ? "grid" : "none";
-            });
+    categories.forEach((cat) => {
+        const item = document.createElement("li");
+        item.classList.add("category-item");
 
-            list.appendChild(item);
-            list.appendChild(subList);
+        const catImg = document.createElement("img");
+        catImg.src = cat.gif.images.fixed_height_small.url;
+        catImg.alt = cat.name;
+        catImg.classList.add("category-thumbnail");
+
+        const catLabel = document.createElement("span");
+        catLabel.textContent = cat.name;
+
+        item.appendChild(catImg);
+        item.appendChild(catLabel);
+
+        const subList = document.createElement("ul");
+        subList.style.display = "none";
+        subList.classList.add("subcategory-list");
+
+        cat.subcategories.forEach((sub) => {
+            const subItem = document.createElement("li");
+            subItem.textContent = sub.name;
+            subItem.classList.add("subcategory-list-item");
+            subList.appendChild(subItem);
         });
 
-        categoriesVisible = true;
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-    }
+        item.addEventListener("click", () => {
+            subList.style.display =
+                subList.style.display === "none" ? "grid" : "none";
+        });
+
+        list.appendChild(item);
+        list.appendChild(subList);
+    });
 }
 
 // ##Search Bar

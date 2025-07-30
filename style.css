@@ -4,7 +4,12 @@ body {
   margin: 0;
 }
 
+header {
+  background-color: whitesmoke;
+}
+
 body {
+  background-color: grey;
   display: flex;
   flex-direction: column;
 }
@@ -60,9 +65,23 @@ body {
   padding: 0.5rem 1rem;
   margin: 0.5rem auto;
 }
+.category-thumbnail,
+.subcategory-thumbnail {
+  width: 100px;
+  height: auto;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 6px;
+}
+
+.category-item,
+.subcategory-list-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
 main {
-  background-color: grey;
   height: 100vh;
   align-content: center;
 }
