@@ -9,7 +9,7 @@ let cachedCategories = null;
 let categoriesVisible = false;
 
 async function fetchCategories() {
-    const list = document.getElementById("js-category-list");
+    const list = document.getElementById("js-category-container");
 
     // Toggle off
     if (categoriesVisible) {
@@ -37,10 +37,9 @@ async function fetchCategories() {
     categoriesVisible = true;
 }
 
-
-// Render from cache
+// Render Categories from cache
 function renderCategories(categories) {
-    const list = document.getElementById("js-category-list");
+    const list = document.getElementById("js-category-container");
 
     categories.forEach((cat) => {
         const item = document.createElement("li");
@@ -59,12 +58,12 @@ function renderCategories(categories) {
 
         const subList = document.createElement("ul");
         subList.style.display = "none";
-        subList.classList.add("subcategory-list");
+        subList.classList.add("subcategory-container");
 
         cat.subcategories.forEach((sub) => {
             const subItem = document.createElement("li");
             subItem.textContent = sub.name;
-            subItem.classList.add("subcategory-list-item");
+            subItem.classList.add("subcategory-item");
             subList.appendChild(subItem);
         });
 
@@ -75,6 +74,61 @@ function renderCategories(categories) {
 
         list.appendChild(item);
         list.appendChild(subList);
+    });
+}
+
+// ##Featured Section
+
+let cachedFeatured = null;
+let featuredVisible = false;
+
+const feturedButton = document.getElementById('js-featured-button');
+feturedButton.addEventListener("click", displayFeatured);
+
+async function displayFeatured() {
+    const list = document.getElementById("js-featured-container");
+
+    //Toggle off
+    if (featuredVisible) {
+        list.innerHTML = "";
+        featuredVisible = false;
+        return;
+    }
+
+    // Fetch and cache if not already done
+    if (!cachedFeatured) {
+        try {
+            const data = await fetch(
+                `https://api.giphy.com/v1/gifs/trending?api_key=${apiKey}&limit=20&offset=0&rating=g&bundle=messaging_non_clips`
+            );
+            const response = await data.json();
+            cachedFeatured = response.data;
+        } catch (error) {
+            console.error("Error fetching featured:", error);
+            return;
+        }
+    }
+
+    // Render from cache
+    renderFeatured(cachedFeatured);
+    featuredVisible = true;
+}
+
+// Render Featured from Cache
+function renderFeatured(featured) {
+    const list = document.getElementById("js-featured-container");
+
+    featured.forEach((feat) => {
+        const item = document.createElement("li");
+        item.classList.add("featured-item");
+
+        const featImg = document.createElement("img");
+        featImg.src = feat.images.fixed_height.url;
+        featImg.alt = feat.title;
+        featImg.classList.add("featured-thumbnail");
+
+        item.appendChild(featImg);
+        list.appendChild(item);
     });
 }
 
