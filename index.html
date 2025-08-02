@@ -25,6 +25,11 @@
           class="category-container"
           style="display: none"
         ></ul>
+        <div
+          id="js-featured-container"
+          class="featured-container"
+          style="display: none"
+        ></div>
       </section>
     </header>
     <main>
@@ -34,13 +39,12 @@
         <button id="js-search-button" class="searchButton">Search</button>
       </div>
       <div class="display-container js-display-container">
-        <ul
-          id="js-featured-container"
-          class="featured-container"
-          style="display: none"
-        ></ul>
+        <div id="js-results" class="resultsContainer"></div>
+        <div id="js-back-button" class="backButton" style="display: none">
+          <p>back</p>
+        </div>
+        <div id="js-focus-container" class="focusContainer"></div>
       </div>
-      <div id="js-results" class="resultsContainer"></div>
     </main>
     <script src="searchEngine.js"></script>
   </body>

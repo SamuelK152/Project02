@@ -1,12 +1,25 @@
 const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 
-// ##Categories Dropdown
+const backButton = document.getElementById("js-back-button");
+backButton.addEventListener("click", goBack);
 
-const categoriesButton = document.getElementById("js-categories-button");
-categoriesButton.addEventListener("click", fetchCategories);
+function showInFocusContainer(gif) {
+    hideAll();
+    focusContainer.innerHTML = "";
+    focusContainer.style.display = "flex";
+    resultsContainer.style.display = "none";
+    backButton.style.display = "flex";
+    const img = document.createElement("img");
+    img.src = gif.images.original.url;
+    img.alt = gif.title;
+    img.classList.add("focus-img");
+    focusContainer.appendChild(img);
+}
 
-let cachedCategories = null;
-let categoriesVisible = false;
+function goBack() {
+    resultsContainer.style.display = "flex";
+    backButton.style.display = "none";
+}
 
 function hideAll() {
     document.getElementById("js-category-container").style.display = "none";
@@ -14,6 +27,14 @@ function hideAll() {
     categoriesVisible = false;
     featuredVisible = false;
 }
+
+// ##Categories Dropdown
+
+const categoriesButton = document.getElementById("js-categories-button");
+categoriesButton.addEventListener("click", fetchCategories);
+
+let cachedCategories = null;
+let categoriesVisible = false;
 
 async function fetchCategories() {
     const list = document.getElementById("js-category-container");
@@ -124,7 +145,7 @@ async function displayFeatured() {
 
     // Render from cache
     renderFeatured(cachedFeatured);
-    list.style.display = "grid";
+    list.style.display = "flex";
     featuredVisible = true;
 }
 
@@ -134,17 +155,12 @@ function renderFeatured(featured) {
     list.innerHTML = "";
 
     featured.forEach((feat) => {
-        const item = document.createElement("li");
-        item.classList.add("featured-item");
-
         const featImg = document.createElement("img");
         featImg.src = feat.images.fixed_height.url;
         featImg.alt = feat.title;
-        featImg.classList.add("featured-thumbnail");
-
-
-        item.appendChild(featImg);
-        list.appendChild(item);
+        featImg.classList.add("featured-item");
+        featImg.addEventListener("click", () => showInFocusContainer(feat))
+        list.appendChild(featImg);
     });
 }
 
@@ -153,6 +169,7 @@ function renderFeatured(featured) {
 const searchButton = document.getElementById("js-search-button");
 const searchBar = document.getElementById("js-search-bar");
 const resultsContainer = document.getElementById("js-results");
+const focusContainer = document.getElementById("js-focus-container");
 
 searchButton.addEventListener("click", () => {
     const query = searchBar.value.trim();
@@ -173,6 +190,7 @@ async function searchGifs(query) {
     }
 }
 
+
 function displayResults(gifs) {
     hideAll();
     resultsContainer.innerHTML = ""; // Clear previous results
@@ -181,6 +199,7 @@ function displayResults(gifs) {
         const img = document.createElement("img");
         img.src = gif.images.fixed_height.url;
         img.alt = gif.title;
+        img.addEventListener("click", () => showInFocusContainer(gif))
         resultsContainer.appendChild(img);
     });
 }
