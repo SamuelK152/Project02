@@ -20,10 +20,11 @@
         </div>
       </section>
       <section id="header-menu">
-        <div class="display-container js-display-container">
-          <ul id="js-category-container" class="category-container"></ul>
-          <ul id="js-featured-container" class="featured-container"></ul>
-        </div>
+        <ul
+          id="js-category-container"
+          class="category-container"
+          style="display: none"
+        ></ul>
       </section>
     </header>
     <main>
@@ -31,6 +32,13 @@
         <h1>Find your GIF</h1>
         <input id="js-search-bar" class="searchBar" type="text" />
         <button id="js-search-button" class="searchButton">Search</button>
+      </div>
+      <div class="display-container js-display-container">
+        <ul
+          id="js-featured-container"
+          class="featured-container"
+          style="display: none"
+        ></ul>
       </div>
       <div id="js-results" class="resultsContainer"></div>
     </main>

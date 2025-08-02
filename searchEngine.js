@@ -8,15 +8,24 @@ categoriesButton.addEventListener("click", fetchCategories);
 let cachedCategories = null;
 let categoriesVisible = false;
 
+function hideAll() {
+    document.getElementById("js-category-container").style.display = "none";
+    document.getElementById("js-featured-container").style.display = "none";
+    categoriesVisible = false;
+    featuredVisible = false;
+}
+
 async function fetchCategories() {
     const list = document.getElementById("js-category-container");
 
     // Toggle off
     if (categoriesVisible) {
-        list.innerHTML = "";
+        list.innerHTML = '';
+        list.style.display = "none";
         categoriesVisible = false;
         return;
     }
+    hideAll();
 
     // Fetch and cache if not already done
     if (!cachedCategories) {
@@ -34,12 +43,14 @@ async function fetchCategories() {
 
     // Render from cache
     renderCategories(cachedCategories);
+    list.style.display = "grid";
     categoriesVisible = true;
 }
 
 // Render Categories from cache
 function renderCategories(categories) {
     const list = document.getElementById("js-category-container");
+    list.innerHTML = "";
 
     categories.forEach((cat) => {
         const item = document.createElement("li");
@@ -90,10 +101,12 @@ async function displayFeatured() {
 
     //Toggle off
     if (featuredVisible) {
-        list.innerHTML = "";
+        list.innerHTML = '';
+        list.style.display = "none";
         featuredVisible = false;
         return;
     }
+    hideAll();
 
     // Fetch and cache if not already done
     if (!cachedFeatured) {
@@ -111,12 +124,14 @@ async function displayFeatured() {
 
     // Render from cache
     renderFeatured(cachedFeatured);
+    list.style.display = "grid";
     featuredVisible = true;
 }
 
 // Render Featured from Cache
 function renderFeatured(featured) {
     const list = document.getElementById("js-featured-container");
+    list.innerHTML = "";
 
     featured.forEach((feat) => {
         const item = document.createElement("li");
@@ -126,6 +141,7 @@ function renderFeatured(featured) {
         featImg.src = feat.images.fixed_height.url;
         featImg.alt = feat.title;
         featImg.classList.add("featured-thumbnail");
+
 
         item.appendChild(featImg);
         list.appendChild(item);
@@ -158,7 +174,9 @@ async function searchGifs(query) {
 }
 
 function displayResults(gifs) {
+    hideAll();
     resultsContainer.innerHTML = ""; // Clear previous results
+    resultsContainer.style.display = "flex";
     gifs.forEach((gif) => {
         const img = document.createElement("img");
         img.src = gif.images.fixed_height.url;
