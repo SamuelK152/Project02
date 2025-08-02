@@ -1,8 +1,35 @@
+// ==============
+// === Config ===
+// ==============
 const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 
-const backButton = document.getElementById("js-back-button");
-backButton.addEventListener("click", goBack);
+let cachedCategories = null;
+let categoriesVisible = false;
 
+let cachedFeatured = null;
+let featuredVisible = false;
+
+// ====================
+// === DOM Elements ===
+// ====================
+const backButton = document.getElementById("js-back-button");
+const categoriesButton = document.getElementById("js-categories-button");
+const feturedButton = document.getElementById('js-featured-button');
+
+const searchButton = document.getElementById("js-search-button");
+const searchBar = document.getElementById("js-search-bar");
+const resultsContainer = document.getElementById("js-results");
+const focusContainer = document.getElementById("js-focus-container");
+
+// =========================
+// === Utility Functions ===
+// =========================
+function hideAll() {
+    document.getElementById("js-category-container").style.display = "none";
+    document.getElementById("js-featured-container").style.display = "none";
+    categoriesVisible = false;
+    featuredVisible = false;
+}
 function showInFocusContainer(gif) {
     hideAll();
     focusContainer.innerHTML = "";
@@ -21,21 +48,9 @@ function goBack() {
     backButton.style.display = "none";
 }
 
-function hideAll() {
-    document.getElementById("js-category-container").style.display = "none";
-    document.getElementById("js-featured-container").style.display = "none";
-    categoriesVisible = false;
-    featuredVisible = false;
-}
-
-// ##Categories Dropdown
-
-const categoriesButton = document.getElementById("js-categories-button");
-categoriesButton.addEventListener("click", fetchCategories);
-
-let cachedCategories = null;
-let categoriesVisible = false;
-
+// ==========================
+// === Categories Section ===
+// ==========================
 async function fetchCategories() {
     const list = document.getElementById("js-category-container");
 
@@ -62,7 +77,7 @@ async function fetchCategories() {
         }
     }
 
-    // Render from cache
+    // Cache
     renderCategories(cachedCategories);
     list.style.display = "grid";
     categoriesVisible = true;
@@ -109,14 +124,9 @@ function renderCategories(categories) {
     });
 }
 
-// ##Featured Section
-
-let cachedFeatured = null;
-let featuredVisible = false;
-
-const feturedButton = document.getElementById('js-featured-button');
-feturedButton.addEventListener("click", displayFeatured);
-
+// ========================
+// === Featured Section ===
+// ========================
 async function displayFeatured() {
     const list = document.getElementById("js-featured-container");
 
@@ -143,7 +153,7 @@ async function displayFeatured() {
         }
     }
 
-    // Render from cache
+    // Cache
     renderFeatured(cachedFeatured);
     list.style.display = "flex";
     featuredVisible = true;
@@ -164,20 +174,9 @@ function renderFeatured(featured) {
     });
 }
 
-// ##Search Bar
-
-const searchButton = document.getElementById("js-search-button");
-const searchBar = document.getElementById("js-search-bar");
-const resultsContainer = document.getElementById("js-results");
-const focusContainer = document.getElementById("js-focus-container");
-
-searchButton.addEventListener("click", () => {
-    const query = searchBar.value.trim();
-    if (query) {
-        searchGifs(query);
-    }
-});
-
+// ======================
+// === Search Section ===
+// ======================
 async function searchGifs(query) {
     try {
         const response = await fetch(
@@ -203,3 +202,16 @@ function displayResults(gifs) {
         resultsContainer.appendChild(img);
     });
 }
+
+// ======================
+// === Initialization ===
+// ======================
+backButton.addEventListener("click", goBack);
+categoriesButton.addEventListener("click", fetchCategories);
+feturedButton.addEventListener("click", displayFeatured);
+searchButton.addEventListener("click", () => {
+    const query = searchBar.value.trim();
+    if (query) {
+        searchGifs(query);
+    }
+});
