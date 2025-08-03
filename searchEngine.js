@@ -4,16 +4,17 @@
 const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 
 let cachedCategories = null;
-let categoriesVisible = false;
+let categoriesVisible = null;
 
 let cachedFeatured = null;
-let featuredVisible = false;
+let featuredVisible = null;
 
 let lastView = null;
 
 // ====================
 // === DOM Elements ===
 // ====================
+const giphyLogo = document.getElementById("js-logo");
 const backButton = document.getElementById("js-back-button");
 const categoriesButton = document.getElementById("js-categories-button");
 const featuredButton = document.getElementById('js-featured-button');
@@ -28,6 +29,12 @@ const featuredContainer = document.getElementById("js-featured-container");
 // =========================
 // === Utility Functions ===
 // =========================
+function returnHome() {
+    hideAll();
+    resultsContainer.style.display = "none";
+    backButton.style.display = "none";
+};
+
 function hideAll() {
     categoryContainer.style.display = "none";
     featuredContainer.style.display = "none";
@@ -214,6 +221,7 @@ function displayResults(gifs) {
 // ======================
 // === Initialization ===
 // ======================
+giphyLogo.addEventListener("click", returnHome);
 backButton.addEventListener("click", goBack);
 categoriesButton.addEventListener("click", fetchCategories);
 featuredButton.addEventListener("click", displayFeatured);
