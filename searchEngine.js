@@ -104,8 +104,8 @@ function renderCategories(categories) {
     categoryContainer.innerHTML = "";
 
     categories.forEach((cat) => {
-        const item = document.createElement("li");
-        item.classList.add("category-item");
+        const catItem = document.createElement("li");
+        catItem.classList.add("category-item");
 
         const catImg = document.createElement("img");
         catImg.src = cat.gif.images.fixed_height_small.url;
@@ -115,8 +115,8 @@ function renderCategories(categories) {
         const catLabel = document.createElement("span");
         catLabel.textContent = cat.name;
 
-        item.appendChild(catImg);
-        item.appendChild(catLabel);
+        catItem.appendChild(catImg);
+        catItem.appendChild(catLabel);
 
         const subList = document.createElement("ul");
         subList.style.display = "none";
@@ -126,15 +126,23 @@ function renderCategories(categories) {
             const subItem = document.createElement("li");
             subItem.textContent = sub.name;
             subItem.classList.add("subcategory-item");
+            subItem.addEventListener("click", () => {
+                const query = sub.name;
+                if (query) {
+                    backButton.style.display = "none";
+                    focusContainer.style.display = "none";
+                    searchGifs(query);
+                }
+            });
             subList.appendChild(subItem);
         });
 
-        item.addEventListener("click", () => {
+        catItem.addEventListener("click", () => {
             subList.style.display =
                 subList.style.display === "none" ? "grid" : "none";
         });
 
-        categoryContainer.appendChild(item);
+        categoryContainer.appendChild(catItem);
         categoryContainer.appendChild(subList);
     });
 }
