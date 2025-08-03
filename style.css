@@ -149,3 +149,17 @@ main {
   justify-content: center;
   width: 100vw;
 }
+
+footer {
+  background-color: brown;
+}
+
+.footerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+.footerItem {
+  flex: 1;
+}
