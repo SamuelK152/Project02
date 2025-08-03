@@ -9,24 +9,28 @@ let categoriesVisible = false;
 let cachedFeatured = null;
 let featuredVisible = false;
 
+let lastView = null;
+
 // ====================
 // === DOM Elements ===
 // ====================
 const backButton = document.getElementById("js-back-button");
 const categoriesButton = document.getElementById("js-categories-button");
-const feturedButton = document.getElementById('js-featured-button');
+const featuredButton = document.getElementById('js-featured-button');
 
 const searchButton = document.getElementById("js-search-button");
 const searchBar = document.getElementById("js-search-bar");
 const resultsContainer = document.getElementById("js-results");
 const focusContainer = document.getElementById("js-focus-container");
+const categoryContainer = document.getElementById("js-category-container");
+const featuredContainer = document.getElementById("js-featured-container");
 
 // =========================
 // === Utility Functions ===
 // =========================
 function hideAll() {
-    document.getElementById("js-category-container").style.display = "none";
-    document.getElementById("js-featured-container").style.display = "none";
+    categoryContainer.style.display = "none";
+    featuredContainer.style.display = "none";
     categoriesVisible = false;
     featuredVisible = false;
 }
@@ -44,20 +48,25 @@ function showInFocusContainer(gif) {
 }
 
 function goBack() {
-    resultsContainer.style.display = "flex";
     backButton.style.display = "none";
+    focusContainer.style.display = "none";
+
+    if (lastView === 'search') {
+        resultsContainer.style.display = 'flex';
+    } else if (lastView === 'featured') {
+        lastView = null;
+    }
 }
 
 // ==========================
 // === Categories Section ===
 // ==========================
 async function fetchCategories() {
-    const list = document.getElementById("js-category-container");
 
     // Toggle off
     if (categoriesVisible) {
-        list.innerHTML = '';
-        list.style.display = "none";
+        categoryContainer.innerHTML = '';
+        categoryContainer.style.display = "none";
         categoriesVisible = false;
         return;
     }
@@ -79,14 +88,13 @@ async function fetchCategories() {
 
     // Cache
     renderCategories(cachedCategories);
-    list.style.display = "grid";
+    categoryContainer.style.display = "grid";
     categoriesVisible = true;
 }
 
 // Render Categories from cache
 function renderCategories(categories) {
-    const list = document.getElementById("js-category-container");
-    list.innerHTML = "";
+    categoryContainer.innerHTML = "";
 
     categories.forEach((cat) => {
         const item = document.createElement("li");
@@ -119,8 +127,8 @@ function renderCategories(categories) {
                 subList.style.display === "none" ? "grid" : "none";
         });
 
-        list.appendChild(item);
-        list.appendChild(subList);
+        categoryContainer.appendChild(item);
+        categoryContainer.appendChild(subList);
     });
 }
 
@@ -128,12 +136,10 @@ function renderCategories(categories) {
 // === Featured Section ===
 // ========================
 async function displayFeatured() {
-    const list = document.getElementById("js-featured-container");
-
     //Toggle off
     if (featuredVisible) {
-        list.innerHTML = '';
-        list.style.display = "none";
+        featuredContainer.innerHTML = '';
+        featuredContainer.style.display = "none";
         featuredVisible = false;
         return;
     }
@@ -155,22 +161,24 @@ async function displayFeatured() {
 
     // Cache
     renderFeatured(cachedFeatured);
-    list.style.display = "flex";
+    featuredContainer.style.display = "flex";
     featuredVisible = true;
 }
 
 // Render Featured from Cache
 function renderFeatured(featured) {
-    const list = document.getElementById("js-featured-container");
-    list.innerHTML = "";
+    featuredContainer.innerHTML = "";
 
     featured.forEach((feat) => {
         const featImg = document.createElement("img");
         featImg.src = feat.images.fixed_height.url;
         featImg.alt = feat.title;
         featImg.classList.add("featured-item");
-        featImg.addEventListener("click", () => showInFocusContainer(feat))
-        list.appendChild(featImg);
+        featImg.addEventListener("click", () => {
+            lastView = 'featured';
+            showInFocusContainer(feat);
+        });
+        featuredContainer.appendChild(featImg);
     });
 }
 
@@ -189,8 +197,8 @@ async function searchGifs(query) {
     }
 }
 
-
 function displayResults(gifs) {
+    lastView = 'search';
     hideAll();
     resultsContainer.innerHTML = ""; // Clear previous results
     resultsContainer.style.display = "flex";
@@ -208,10 +216,12 @@ function displayResults(gifs) {
 // ======================
 backButton.addEventListener("click", goBack);
 categoriesButton.addEventListener("click", fetchCategories);
-feturedButton.addEventListener("click", displayFeatured);
+featuredButton.addEventListener("click", displayFeatured);
 searchButton.addEventListener("click", () => {
     const query = searchBar.value.trim();
     if (query) {
+        backButton.style.display = "none";
+        focusContainer.style.display = "none";
         searchGifs(query);
     }
 });
