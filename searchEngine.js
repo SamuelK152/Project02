@@ -25,14 +25,18 @@ const resultsContainer = document.getElementById("js-results");
 const focusContainer = document.getElementById("js-focus-container");
 const categoryContainer = document.getElementById("js-category-container");
 const featuredContainer = document.getElementById("js-featured-container");
+const gifDetails = document.getElementById("js-gifDetails")
 
 // =========================
 // === Utility Functions ===
 // =========================
 function returnHome() {
+    lastView = null;
     hideAll();
     resultsContainer.style.display = "none";
     backButton.style.display = "none";
+    focusContainer.style.display = "none";
+    gifDetails.style.display = "none";
 };
 
 function hideAll() {
@@ -44,23 +48,35 @@ function hideAll() {
 function showInFocusContainer(gif) {
     hideAll();
     focusContainer.innerHTML = "";
+    gifDetails.innerHTML = "";
+
     focusContainer.style.display = "flex";
     resultsContainer.style.display = "none";
     backButton.style.display = "flex";
+    gifDetails.style.display = "flex";
+
     const img = document.createElement("img");
     img.src = gif.images.original.url;
     img.alt = gif.title;
     img.classList.add("focus-img");
+
+    const gifTitle = document.createElement("p");
+    gifTitle.innerHTML = gif.title;
+    gifTitle.classList.add("gif-title")
+
     focusContainer.appendChild(img);
+    gifDetails.appendChild(gifTitle);
 }
 
 function goBack() {
     backButton.style.display = "none";
     focusContainer.style.display = "none";
+    gifDetails.style.display = "none";
 
     if (lastView === 'search') {
         resultsContainer.style.display = 'flex';
     } else if (lastView === 'featured') {
+        featuredContainer.style.display = "flex";
         lastView = null;
     }
 }
