@@ -4,19 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GIPHY Search Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header>
       <section id="header-block">
         <div class="logo" id="js-logo">
-          <img src="TODO" alt="GIPHY Logo" /><!-- TODO -->
+          <img src="GIFYlogo.png" alt="GIPHY Logo" />
         </div>
         <div class="header-buttons">
-          <button id="js-categories-button" class="header-button">
+          <button id="js-categories-button" class="header-button btn">
             Categories
           </button>
-          <button id="js-featured-button" class="header-button">
+          <button id="js-featured-button" class="header-button btn">
             Featured
           </button>
         </div>
@@ -38,10 +48,14 @@
       <div class="searchContainer">
         <h1>Find your GIF</h1>
         <input id="js-search-bar" class="searchBar" type="text" />
-        <button id="js-search-button" class="searchButton">Search</button>
+        <button id="js-search-button" class="searchButton btn">Search</button>
       </div>
       <div class="display-container js-display-container">
-        <div id="js-results" class="resultsContainer"></div>
+        <div
+          id="js-results"
+          class="resultsContainer"
+          style="display: none"
+        ></div>
         <div id="js-back-button" class="backButton" style="display: none">
           <p>back</p>
         </div>

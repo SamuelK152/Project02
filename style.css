@@ -1,22 +1,54 @@
 html,
 body {
-  height: 100%;
+  font-family: "Bungee", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   margin: 0;
-}
-
-header {
-  background-color: purple;
+  height: 100%;
 }
 
 body {
-  background-color: grey;
+  color: antiquewhite;
+  background-color: #000000;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 #header-block {
   display: flex;
-  background-color: blue;
+  position: relative;
+  background-color: #2e2c29;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, #ff7e5f, #feb47b) 1;
+}
+
+.logo {
+  position: absolute;
+  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  cursor: pointer;
+}
+.logo img {
+  display: flex;
+  max-height: 3rem;
+}
+
+.btn {
+  background-color: antiquewhite;
+  cursor: pointer;
+  font-size: large;
+  font-weight: 600;
+  height: 2rem;
+  width: 10rem;
+  border-radius: 10px;
+  font-family: "Bungee", sans-serif;
+}
+
+.btn:hover {
+  background-color: #feb47b;
 }
 
 .header-buttons {
@@ -24,14 +56,10 @@ body {
   width: 100%;
   justify-content: center;
   text-align: justify;
-  margin: 1rem auto;
+  margin: 0 auto;
 }
 .header-button {
   margin: 1rem 2rem;
-  height: 2rem;
-  width: 8rem;
-  font-size: large;
-  font-weight: 600;
 }
 
 .category-container {
@@ -41,9 +69,10 @@ body {
   list-style-type: none;
   justify-content: center;
   padding: 1rem;
-  margin: 1rem 4rem;
-  border: 2px, solid, black;
-  background-color: red;
+  margin: 2rem 4rem 0;
+  background-color: #2e2c29;
+  border: solid 3px;
+  border-image: linear-gradient(to right, #ff7e5f, #feb47b) 1;
 }
 
 .category-item {
@@ -107,13 +136,18 @@ body {
 }
 
 main {
-  height: 100vh;
+  flex: 1;
   align-content: center;
 }
 
 .searchContainer {
   display: flex;
   justify-self: center;
+  background-color: #2e2c29;
+  padding: 1rem 10%;
+  margin: 2rem 0;
+  border: solid 3px;
+  border-image: linear-gradient(to right, #ff7e5f, #feb47b) 1;
 }
 
 .searchBar {
@@ -124,7 +158,6 @@ main {
 
 .searchButton {
   margin: 20px 0;
-  width: 8rem;
 }
 
 .resultsContainer {
@@ -138,28 +171,39 @@ main {
 }
 
 .resultsContainer img {
-  border-radius: 8px;
   margin: auto;
 }
 
-.backButton {
+.focusContainer {
+  margin: 2rem;
   justify-content: center;
 }
-.focusContainer {
-  justify-content: center;
-  width: 100vw;
+
+.backButton {
+  justify-self: center;
+  max-width: fit-content;
+  cursor: pointer;
+}
+.backButton > p {
+  margin: 0;
 }
 
 footer {
-  background-color: brown;
+  background-color: #2e2c29;
+  padding: 1rem;
+  border-top: 3px solid;
+  border-image: linear-gradient(to right, #ff7e5f, #feb47b) 1;
+  font-size: smaller;
 }
 
 .footerContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
 }
 .footerItem {
   flex: 1;
+}
+.footerItem > p {
+  margin: 0;
 }
