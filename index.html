@@ -18,19 +18,42 @@
   </head>
   <body>
     <header>
-      <section id="header-block">
-        <div class="logo" id="js-logo">
-          <img src="GIFYlogo.png" alt="GIPHY Logo" />
+      <div id="header-flex">
+        <div class="headerMain">
+          <div class="logo" id="js-logo">
+            <img
+              src="GIFYlogo.png"
+              alt="GIPHY Logo"
+              class="logo"
+              id="js-logo"
+            />
+          </div>
+          <div class="header-buttons">
+            <button id="js-categories-button" class="header-button btn">
+              Categories
+            </button>
+            <button id="js-featured-button" class="header-button btn">
+              Featured
+            </button>
+          </div>
+          <button id="js-menu-button" class="menu-button btn">Menu</button>
         </div>
-        <div class="header-buttons">
-          <button id="js-categories-button" class="header-button btn">
+        <div class="menuButtons" id="js-menu-buttons">
+          <button
+            id="js-menu-categories-button"
+            class="header-button menu-item btn"
+          >
             Categories
           </button>
-          <button id="js-featured-button" class="header-button btn">
+          <button
+            id="js-menu-featured-button"
+            class="header-button menu-item btn"
+          >
             Featured
           </button>
         </div>
-      </section>
+      </div>
+
       <section id="header-menu">
         <ul
           id="js-category-container"

@@ -3,6 +3,8 @@
 // ==============
 const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 
+let menuVisible = null;
+
 let cachedCategories = null;
 let categoriesVisible = null;
 
@@ -17,8 +19,11 @@ let lastView = null;
 const giphyLogo = document.getElementById("js-logo");
 const backButton = document.getElementById("js-back-button");
 const categoriesButton = document.getElementById("js-categories-button");
+const menuCategoriesButton = document.getElementById("js-menu-categories-button");
 const featuredButton = document.getElementById('js-featured-button');
-
+const menuFeaturedButton = document.getElementById("js-menu-featured-button");
+const menuButton = document.getElementById("js-menu-button");
+const menuButtons = document.getElementById("js-menu-buttons")
 const searchButton = document.getElementById("js-search-button");
 const searchBar = document.getElementById("js-search-bar");
 const resultsContainer = document.getElementById("js-results");
@@ -30,6 +35,16 @@ const gifDetails = document.getElementById("js-gifDetails")
 // =========================
 // === Utility Functions ===
 // =========================
+function menuToggle() {
+    if (menuVisible === null) {
+        menuButtons.style.display = "flex"
+        menuVisible = true
+    } else if (menuVisible = true) {
+        menuButtons.style.display = "none"
+        menuVisible = null
+    }
+}
+
 function returnHome() {
     lastView = null;
     hideAll();
@@ -189,14 +204,11 @@ async function displayFeatured() {
             return;
         }
     }
-
-    // Cache
     renderFeatured(cachedFeatured);
     featuredContainer.style.display = "flex";
     featuredVisible = true;
 }
 
-// Render Featured from Cache
 function renderFeatured(featured) {
     featuredContainer.innerHTML = "";
 
@@ -248,7 +260,10 @@ function displayResults(gifs) {
 giphyLogo.addEventListener("click", returnHome);
 backButton.addEventListener("click", goBack);
 categoriesButton.addEventListener("click", fetchCategories);
+menuCategoriesButton.addEventListener("click", fetchCategories);
 featuredButton.addEventListener("click", displayFeatured);
+menuFeaturedButton.addEventListener("click", displayFeatured);
+menuButton.addEventListener("click", menuToggle);
 searchButton.addEventListener("click", () => {
     const query = searchBar.value.trim();
     if (query) {
