@@ -15,27 +15,54 @@ body {
   min-height: 100vh;
 }
 
-#header-flex {
-  display: block;
+header {
+  display: flex;
   position: relative;
   background-color: #2e2c29;
   border-bottom: 2px solid;
   border-image: linear-gradient(to right, #ff7e5f, #feb47b) 1;
 }
 
-.headerMain {
+.menuContainer {
+  flex: 2;
+}
+.headerContainer {
   display: flex;
+  flex: 1;
 }
 
-.logo {
+.logo img {
+  display: flex;
+  flex: 1;
+  max-height: 3rem;
   left: auto;
   width: auto;
   margin: 0.25rem;
   cursor: pointer;
 }
-.logo img {
+
+.headerSearchContainer {
   display: flex;
-  max-height: 3rem;
+  justify-self: center;
+  margin-right: 0.5rem;
+}
+
+.headerSearchContainer > p1 {
+  margin: 1rem auto;
+  align-self: center;
+}
+
+.headerSearchBar {
+  font-family: "Bungee", sans-serif;
+  height: 20px;
+  width: 8rem;
+  align-self: center;
+  margin: 0 2rem;
+  background-color: antiquewhite;
+}
+
+.headerSearchButton {
+  margin: 1rem auto;
 }
 
 .btn {
@@ -55,41 +82,30 @@ body {
 
 .header-buttons {
   display: flex;
-  width: 100%;
-  justify-content: center;
-  text-align: justify;
-  margin: 0 auto;
+  justify-content: flex-end;
 }
+
 .header-button {
   margin: 1rem 2rem;
 }
-.menu-button {
-  display: none;
+.flex-spacer {
+  flex: 2;
+}
+
+.menuButton {
+  display: flex;
+  flex: 1;
   margin: 1rem 2rem;
+  max-width: 10rem;
   justify-content: center;
-  margin-left: auto;
+  justify-self: end;
 }
 .menuButtons {
   display: none;
-  flex-direction: column;
   align-items: center;
 }
 
-@media (max-width: 920px) {
-  .header-buttons {
-    justify-content: end;
-  }
-}
-@media (max-width: 620px) {
-  .header-buttons {
-    display: none;
-  }
-  .menu-button {
-    display: flex;
-  }
-}
-
-.category-container {
+.categoryContainer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
@@ -98,73 +114,51 @@ body {
   align-items: center;
   padding: 2rem 0;
   margin: 2rem 4rem 0;
-  background-color: #2e2c29;
-  border: solid 3px;
-  border-image: linear-gradient(to right, #ff7e5f, #feb47b) 1;
 }
 
-@media (max-width: 1120px) {
-  .category-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.category-back-btn {
+  justify-self: center;
+  max-width: fit-content;
+  cursor: pointer;
 }
-@media (max-width: 920px) {
-  .category-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.category-back-btn:hover {
+  color: #feb47b;
 }
-@media (max-width: 680px) {
-  .category-container {
-    grid-template-columns: repeat(1, 1fr);
-  }
+.category-back-btn > p {
+  margin: 0;
 }
-@media (max-width: 425px) {
-  .category-container {
-    margin: 2rem 2rem 0;
-  }
-}
+
 .category-item,
 .subcategory-item {
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  font-weight: bold;
   justify-content: start;
   align-items: center;
   text-align: center;
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
-.category-item:hover,
+.category-item > span:hover,
 .subcategory-item:hover {
   color: #feb47b;
 }
 
 .subcategory-container {
+  display: block;
+}
+
+.subcategory-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  row-gap: 1rem;
   padding: 0;
   padding-top: 0.5rem;
-  margin: auto;
-  grid-column: 1 / -1;
+  width: 100%;
 }
-@media (max-width: 700px) {
-  .subcategory-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 590px) {
-  .subcategory-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 365px) {
-  .subcategory-container {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
+
 .category-thumbnail {
   width: 100px;
   height: auto;
@@ -212,12 +206,6 @@ main {
   margin: 1rem auto;
 }
 
-@media (max-width: 920px) {
-  .searchContainer {
-    flex-direction: column;
-  }
-}
-
 .searchBar {
   font-family: "Bungee", sans-serif;
   height: 20px;
@@ -226,20 +214,8 @@ main {
   background-color: antiquewhite;
 }
 
-@media (max-width: 920px) {
-  .searchBar {
-    margin: 1rem 2rem;
-  }
-}
-
 .searchButton {
   margin: auto;
-}
-
-@media (max-width: 920px) {
-  .searchButton {
-    margin: 1rem auto;
-  }
 }
 
 .resultsContainer {
@@ -286,4 +262,123 @@ footer {
   margin: 0;
   padding: 0 1rem;
   flex: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+/* --- 939px --- */
+@media (max-width: 939px) {
+  header {
+    flex-direction: column;
+  }
+  .headerContainer {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  .header-buttons {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .menuButtons {
+    justify-content: center;
+  }
+
+  .searchBar {
+    margin: 1rem 2rem;
+  }
+}
+
+/* --- 920px --- */
+@media (max-width: 920px) {
+  .searchContainer {
+    flex-direction: column;
+  }
+  .searchButton {
+    margin: 1rem auto;
+  }
+}
+
+/* --- 650px --- */
+@media (max-width: 650px) {
+  .headerSearchContainer {
+    flex-direction: column;
+  }
+}
+
+/* --- 620px --- */
+@media (max-width: 620px) {
+  .headerContainer {
+    flex: 2;
+  }
+  .flex-spacer {
+    flex: 0;
+  }
+}
+
+/* --- 590px --- */
+@media (max-width: 590px) {
+  .subcategory-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .categoryContainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 440px) {
+  .categoryContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- 365px --- */
+@media (max-width: 365px) {
+  .subcategory-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 350px) {
+  .menuButtons {
+    flex-direction: column;
+  }
+  .subcategory-list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .categoryContainer {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+/* --- 320px --- */
+@media (max-width: 320px) {
+  .resultsContainer {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 290px) {
+  .searchContainer > h1 {
+    font-size: 22px;
+  }
+  .searchContainer {
+    margin: 0;
+    padding: 0;
+  }
+  .searchBar {
+    max-width: min-content;
+  }
+}
+
+/* --- 250px --- */
+@media (max-width: 250px) {
+  .subcategory-list {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }

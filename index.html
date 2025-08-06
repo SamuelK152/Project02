@@ -18,8 +18,8 @@
   </head>
   <body>
     <header>
-      <div id="header-flex">
-        <div class="headerMain">
+      <div class="menuContainer">
+        <div class="headerContainer">
           <div class="logo" id="js-logo">
             <img
               src="GIFYlogo.png"
@@ -28,15 +28,7 @@
               id="js-logo"
             />
           </div>
-          <div class="header-buttons">
-            <button id="js-categories-button" class="header-button btn">
-              Categories
-            </button>
-            <button id="js-featured-button" class="header-button btn">
-              Featured
-            </button>
-          </div>
-          <button id="js-menu-button" class="menu-button btn">Menu</button>
+          <button id="js-menu-button" class="hidden">Menu</button>
         </div>
         <div class="menuButtons" id="js-menu-buttons">
           <button
@@ -53,27 +45,32 @@
           </button>
         </div>
       </div>
-
-      <section id="header-menu">
-        <ul
-          id="js-category-container"
-          class="category-container"
-          style="display: none"
-        ></ul>
-        <div
-          id="js-featured-container"
-          class="featured-container"
-          style="display: none"
-        ></div>
-      </section>
+      <div class="header-buttons" id="js-header-buttons">
+        <button id="js-categories-button" class="header-button btn">
+          Categories
+        </button>
+        <button id="js-featured-button" class="header-button btn">
+          Featured
+        </button>
+      </div>
+      <div class="flex-spacer"></div>
+      <div class="hidden" id="js-header-search-container">
+        <!-- toggle class = "headerSearchContainer" -->
+        <p1>Find your GIF</p1>
+        <input id="js-header-search-bar" class="headerSearchBar" type="text" />
+        <button id="js-header-search-button" class="headerSearchButton btn">
+          Search
+        </button>
+      </div>
     </header>
     <main>
-      <div class="searchContainer">
+      <div class="searchContainer" id="js-search-container">
         <h1>Find your GIF</h1>
         <input id="js-search-bar" class="searchBar" type="text" />
         <button id="js-search-button" class="searchButton btn">Search</button>
       </div>
       <div class="display-container js-display-container">
+        <div id="js-category-container" class="categoryContainer"></div>
         <div
           id="js-results"
           class="resultsContainer"

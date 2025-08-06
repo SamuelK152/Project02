@@ -4,9 +4,10 @@
 const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 
 let menuVisible = null;
+let searchBarPos = "body";
 
-let cachedCategories = null;
-let categoriesVisible = null;
+let cachedCategories = false;
+let categoriesVisible = false;
 
 let cachedFeatured = null;
 let featuredVisible = null;
@@ -18,18 +19,23 @@ let lastView = null;
 // ====================
 const giphyLogo = document.getElementById("js-logo");
 const backButton = document.getElementById("js-back-button");
+const categoryContainer = document.getElementById("js-category-container");
 const categoriesButton = document.getElementById("js-categories-button");
 const menuCategoriesButton = document.getElementById("js-menu-categories-button");
 const featuredButton = document.getElementById('js-featured-button');
 const menuFeaturedButton = document.getElementById("js-menu-featured-button");
 const menuButton = document.getElementById("js-menu-button");
 const menuButtons = document.getElementById("js-menu-buttons")
+const headerButtons = document.getElementById("js-header-buttons");
+const mediaQuery620 = window.matchMedia('(max-width:620px)');
+const headerSearchContainer = document.getElementById("js-header-search-container")
+const searchContainer = document.getElementById("js-search-container")
 const searchButton = document.getElementById("js-search-button");
+const menuSearchButton = document.getElementById("js-header-search-button");
+const menuSearchBar = document.getElementById("js-header-search-bar")
 const searchBar = document.getElementById("js-search-bar");
 const resultsContainer = document.getElementById("js-results");
 const focusContainer = document.getElementById("js-focus-container");
-const categoryContainer = document.getElementById("js-category-container");
-const featuredContainer = document.getElementById("js-featured-container");
 const gifDetails = document.getElementById("js-gifDetails")
 
 // =========================
@@ -44,22 +50,72 @@ function menuToggle() {
         menuVisible = null
     }
 }
+function handleScreenChange(e) {
+    if (e.matches) {
+        menuButton.classList.add('menuButton', 'btn');
+        menuButton.classList.remove('hidden');
+        headerButtons.classList.remove('header-buttons');
+        headerButtons.classList.add('hidden');
+    } else {
+        menuButton.classList.add('hidden');
+        menuButton.classList.remove('menuButton', 'btn');
+        menuButtons.style.display = 'none';
+        headerButtons.classList.add('header-buttons');
+        headerButtons.classList.remove('hidden');
+    }
+}
+handleScreenChange(mediaQuery620);
+
+function searchToggle() {
+    if (searchBarPos === "body") {
+        headerSearchContainer.className = "headerSearchContainer"
+        searchContainer.className = "hidden"
+        menuButton.className = "menuButton btn"
+        headerButtons.className = "hidden"
+        searchBarPos = "header"
+    } else if (searchBarPos === "header") {
+        headerSearchContainer.className = "hidden"
+        searchContainer.className = "searchContainer"
+        headerButtons.className = "header-buttons"
+        menuButton.className = "hidden"
+        searchBarPos = "body"
+    }
+}
 
 function returnHome() {
+    //searchBar
+    if (searchBarPos === "header") {
+        searchToggle()
+    }
+    //backButton
     lastView = null;
+    //Categories / Featured
     hideAll();
+    //
+    menuButtons.style.display = "none";
     resultsContainer.style.display = "none";
     backButton.style.display = "none";
     focusContainer.style.display = "none";
+    categoryContainer.innerHTML = '';
     gifDetails.style.display = "none";
+
+    // Responsive header/menu button toggle
+    if (mediaQuery620.matches) {
+        menuButton.classList.remove('hidden');
+        menuButton.classList.add('btn');
+        menuButton.classList.add('menuButton');
+        headerButtons.classList.add('hidden');
+    } else {
+        menuButton.classList.add('hidden');
+        headerButtons.classList.remove('hidden');
+    }
 };
 
 function hideAll() {
-    categoryContainer.style.display = "none";
-    featuredContainer.style.display = "none";
     categoriesVisible = false;
     featuredVisible = false;
 }
+
 function showInFocusContainer(gif) {
     hideAll();
     focusContainer.innerHTML = "";
@@ -83,34 +139,25 @@ function showInFocusContainer(gif) {
     gifDetails.appendChild(gifTitle);
 }
 
+function hideFocusContainer() {
+    backButton.style.display = "none";
+    focusContainer.style.display = "none";
+    gifDetails.style.display = "none";
+}
+
 function goBack() {
     backButton.style.display = "none";
     focusContainer.style.display = "none";
     gifDetails.style.display = "none";
 
-    if (lastView === 'search') {
-        resultsContainer.style.display = 'flex';
-    } else if (lastView === 'featured') {
-        featuredContainer.style.display = "flex";
-        lastView = null;
-    }
+    resultsContainer.style.display = 'flex';
+
 }
 
 // ==========================
 // === Categories Section ===
 // ==========================
-async function fetchCategories() {
-
-    // Toggle off
-    if (categoriesVisible) {
-        categoryContainer.innerHTML = '';
-        categoryContainer.style.display = "none";
-        categoriesVisible = false;
-        return;
-    }
-    hideAll();
-
-    // Fetch and cache if not already done
+async function cacheCategories() {
     if (!cachedCategories) {
         try {
             const data = await fetch(
@@ -123,16 +170,31 @@ async function fetchCategories() {
             return;
         }
     }
-
-    // Cache
-    renderCategories(cachedCategories);
-    categoryContainer.style.display = "grid";
-    categoriesVisible = true;
 }
 
-// Render Categories from cache
+async function categoriesButtonClick() {
+    // Toggle off
+    if (categoriesVisible) {
+        searchToggle()
+        categoryContainer.innerHTML = '';
+        categoriesVisible = false;
+        menuButtons.style.display = 'none';
+        menuVisible = null;
+        return;
+    } else if (searchBarPos === "body") {
+        searchToggle()
+    }
+    await cacheCategories();
+    resultsContainer.innerHTML = '';
+    renderCategories(cachedCategories);
+    categoriesVisible = true;
+    featuredVisible = false;
+}
+
 function renderCategories(categories) {
-    categoryContainer.innerHTML = "";
+    resultsContainer.innerHTML = "";
+    resultsContainer.style.display = "flex";
+    hideFocusContainer()
 
     categories.forEach((cat) => {
         const catItem = document.createElement("li");
@@ -146,12 +208,12 @@ function renderCategories(categories) {
         const catLabel = document.createElement("span");
         catLabel.textContent = cat.name;
 
-        catItem.appendChild(catImg);
-        catItem.appendChild(catLabel);
+        const subBox = document.createElement("div");
+        subBox.classList.add("subcategory-container");
 
         const subList = document.createElement("ul");
         subList.style.display = "none";
-        subList.classList.add("subcategory-container");
+        subList.classList.add("subcategory-list");
 
         cat.subcategories.forEach((sub) => {
             const subItem = document.createElement("li");
@@ -168,30 +230,51 @@ function renderCategories(categories) {
             subList.appendChild(subItem);
         });
 
-        catItem.addEventListener("click", () => {
-            subList.style.display =
-                subList.style.display === "none" ? "grid" : "none";
+        catItem.addEventListener("click", (e) => {
+            // Prevent bubbling to subcategory clicks
+            if (e.target === catItem || e.target === catImg || e.target === catLabel) {
+                // Clear all categories
+                focusContainer.innerHTML = '';
+                categoryContainer.innerHTML = "";
+
+                const backBtn = document.createElement("p");
+                backBtn.textContent = "back";
+                backBtn.classList.add("category-back-btn");
+                backBtn.addEventListener("click", () => {
+                    renderCategories(cachedCategories);
+
+                });
+
+                // Show only this category
+                subList.style.display = "grid";
+                subBox.appendChild(subList);
+
+                // Rebuild the selected category view
+                catItem.innerHTML = "";
+                catItem.appendChild(backBtn)
+                catItem.appendChild(catImg);
+                catItem.appendChild(catLabel);
+                catItem.appendChild(subBox);
+
+                focusContainer.appendChild(catItem);
+                focusContainer.style.display = "flex";
+            }
         });
+        subBox.appendChild(subList);
+        catItem.appendChild(catImg);
+        catItem.appendChild(catLabel);
+        catItem.appendChild(subBox);
+        //catItem.appendChild(subBox); //Add subBox to catItem
+        // subBox.appendChild(subList); //Add subList to subBox
 
         categoryContainer.appendChild(catItem);
-        categoryContainer.appendChild(subList);
     });
 }
 
 // ========================
 // === Featured Section ===
 // ========================
-async function displayFeatured() {
-    //Toggle off
-    if (featuredVisible) {
-        featuredContainer.innerHTML = '';
-        featuredContainer.style.display = "none";
-        featuredVisible = false;
-        return;
-    }
-    hideAll();
-
-    // Fetch and cache if not already done
+async function cacheFeatured() {
     if (!cachedFeatured) {
         try {
             const data = await fetch(
@@ -204,13 +287,31 @@ async function displayFeatured() {
             return;
         }
     }
+}
+
+async function featuredButtonClick() {
+    //Toggle off
+    if (featuredVisible) {
+        searchToggle()
+        resultsContainer.innerHTML = '';
+        featuredVisible = false;
+        menuButtons.style.display = 'none';
+        menuVisible = null;
+        return;
+    } else if (searchBarPos === "body") {
+        searchToggle()
+    }
+    await cacheFeatured();
+    categoryContainer.innerHTML = '';
     renderFeatured(cachedFeatured);
-    featuredContainer.style.display = "flex";
     featuredVisible = true;
+    categoriesVisible = false;
 }
 
 function renderFeatured(featured) {
-    featuredContainer.innerHTML = "";
+    resultsContainer.innerHTML = "";
+    resultsContainer.style.display = "flex";
+    hideFocusContainer()
 
     featured.forEach((feat) => {
         const featImg = document.createElement("img");
@@ -218,10 +319,9 @@ function renderFeatured(featured) {
         featImg.alt = feat.title;
         featImg.classList.add("featured-item");
         featImg.addEventListener("click", () => {
-            lastView = 'featured';
             showInFocusContainer(feat);
         });
-        featuredContainer.appendChild(featImg);
+        resultsContainer.appendChild(featImg);
     });
 }
 
@@ -241,8 +341,8 @@ async function searchGifs(query) {
 }
 
 function displayResults(gifs) {
-    lastView = 'search';
     hideAll();
+    categoryContainer.innerHTML = "";
     resultsContainer.innerHTML = ""; // Clear previous results
     resultsContainer.style.display = "flex";
     gifs.forEach((gif) => {
@@ -259,10 +359,11 @@ function displayResults(gifs) {
 // ======================
 giphyLogo.addEventListener("click", returnHome);
 backButton.addEventListener("click", goBack);
-categoriesButton.addEventListener("click", fetchCategories);
-menuCategoriesButton.addEventListener("click", fetchCategories);
-featuredButton.addEventListener("click", displayFeatured);
-menuFeaturedButton.addEventListener("click", displayFeatured);
+mediaQuery620.addEventListener('change', handleScreenChange);
+categoriesButton.addEventListener("click", categoriesButtonClick);
+menuCategoriesButton.addEventListener("click", categoriesButtonClick);
+featuredButton.addEventListener("click", featuredButtonClick);
+menuFeaturedButton.addEventListener("click", featuredButtonClick);
 menuButton.addEventListener("click", menuToggle);
 searchButton.addEventListener("click", () => {
     const query = searchBar.value.trim();
@@ -270,5 +371,21 @@ searchButton.addEventListener("click", () => {
         backButton.style.display = "none";
         focusContainer.style.display = "none";
         searchGifs(query);
+        searchToggle()
     }
 });
+menuSearchButton.addEventListener("click", () => {
+    const query = menuSearchBar.value.trim();
+    if (query) {
+        backButton.style.display = "none";
+        focusContainer.style.display = "none";
+        searchGifs(query);
+    }
+});
+
+// ==================
+// === Load Cache ===
+// ==================
+
+cacheFeatured()
+cacheCategories()
