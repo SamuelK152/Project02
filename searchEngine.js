@@ -34,6 +34,7 @@ const searchButton = document.getElementById("js-search-button");
 const menuSearchButton = document.getElementById("js-header-search-button");
 const menuSearchBar = document.getElementById("js-header-search-bar")
 const searchBar = document.getElementById("js-search-bar");
+const titleContainer = document.getElementById("js-title-container");
 const resultsContainer = document.getElementById("js-results");
 const focusContainer = document.getElementById("js-focus-container");
 const gifDetails = document.getElementById("js-gifDetails")
@@ -95,6 +96,7 @@ function returnHome() {
     menuButtons.style.display = "none";
     resultsContainer.style.display = "none";
     backButton.style.display = "none";
+    titleContainer.style.display = "none";
     focusContainer.style.display = "none";
     categoryContainer.innerHTML = '';
     gifDetails.style.display = "none";
@@ -194,6 +196,8 @@ async function categoriesButtonClick() {
 function renderCategories(categories) {
     resultsContainer.innerHTML = "";
     resultsContainer.style.display = "flex";
+    titleContainer.style.display = "flex";
+    titleContainer.innerHTML = "<h1>Categories</h1>"
     hideFocusContainer()
 
     categories.forEach((cat) => {
@@ -311,6 +315,8 @@ async function featuredButtonClick() {
 function renderFeatured(featured) {
     resultsContainer.innerHTML = "";
     resultsContainer.style.display = "flex";
+    titleContainer.style.display = "flex";
+    titleContainer.innerHTML = "<h1>Featured</h1>"
     hideFocusContainer()
 
     featured.forEach((feat) => {
@@ -334,14 +340,16 @@ async function searchGifs(query) {
             `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=50`
         );
         const data = await response.json();
-        displayResults(data.data);
+        displayResults(data.data, query);
     } catch (error) {
         console.error("Error fetching search results:", error);
     }
 }
 
-function displayResults(gifs) {
+function displayResults(gifs, query) {
     hideAll();
+    titleContainer.style.display = "flex";
+    titleContainer.innerHTML = `<h1>${query}</h1>`;
     categoryContainer.innerHTML = "";
     resultsContainer.innerHTML = ""; // Clear previous results
     resultsContainer.style.display = "flex";

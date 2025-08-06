@@ -63,6 +63,7 @@ header {
 
 .headerSearchButton {
   margin: 1rem auto;
+  align-self: center;
 }
 
 .btn {
@@ -103,6 +104,12 @@ header {
 .menuButtons {
   display: none;
   align-items: center;
+}
+
+.title-container {
+  margin-top: 2rem;
+  justify-content: center;
+  align-content: center;
 }
 
 .categoryContainer {
