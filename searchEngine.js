@@ -4,6 +4,8 @@
 const apiKey = "mgMtRKqOssbqEmUBEyMMD3uuJf2UGuTy";
 
 let menuVisible = null;
+
+
 let searchBarPos = "body";
 
 let cachedCategories = false;
@@ -51,22 +53,27 @@ function menuToggle() {
         menuVisible = null
     }
 }
-function handleScreenChange(e) {
-    if (e.matches) {
-        menuButton.classList.add('menuButton', 'btn');
-        menuButton.classList.remove('hidden');
-        headerButtons.classList.remove('header-buttons');
-        headerButtons.classList.add('hidden');
-    } else {
-        menuButton.classList.add('hidden');
-        menuButton.classList.remove('menuButton', 'btn');
-        menuButtons.style.display = 'none';
-        headerButtons.classList.add('header-buttons');
-        headerButtons.classList.remove('hidden');
-    }
-}
-handleScreenChange(mediaQuery620);
+function hideAll() {
+    hideFocusContainer()
+    categoriesVisible = false;
+    featuredVisible = false;
 
+    categoryContainer.style.display = "none";
+    resultsContainer.style.display = "none";
+}
+function hideFocusContainer() {
+    backButton.style.display = "none";
+    focusContainer.style.display = "none";
+    gifDetails.style.display = "none";
+}
+function goBack() {
+    backButton.style.display = "none";
+    focusContainer.style.display = "none";
+    gifDetails.style.display = "none";
+
+    resultsContainer.style.display = 'flex';
+
+}
 function searchToggle() {
     if (searchBarPos === "body") {
         headerSearchContainer.className = "headerSearchContainer"
@@ -74,15 +81,16 @@ function searchToggle() {
         menuButton.className = "menuButton btn"
         headerButtons.className = "hidden"
         searchBarPos = "header"
+        menuVisible = null;
     } else if (searchBarPos === "header") {
         headerSearchContainer.className = "hidden"
         searchContainer.className = "searchContainer"
         headerButtons.className = "header-buttons"
         menuButton.className = "hidden"
         searchBarPos = "body"
+        menuVisible = null;
     }
 }
-
 function returnHome() {
     //searchBar
     if (searchBarPos === "header") {
@@ -94,12 +102,8 @@ function returnHome() {
     hideAll();
     //
     menuButtons.style.display = "none";
-    resultsContainer.style.display = "none";
-    backButton.style.display = "none";
+    menuVisible = null;
     titleContainer.style.display = "none";
-    focusContainer.style.display = "none";
-    categoryContainer.innerHTML = '';
-    gifDetails.style.display = "none";
 
     // Responsive header/menu button toggle
     if (mediaQuery620.matches) {
@@ -112,19 +116,12 @@ function returnHome() {
         headerButtons.classList.remove('hidden');
     }
 };
-
-function hideAll() {
-    categoriesVisible = false;
-    featuredVisible = false;
-}
-
 function showInFocusContainer(gif) {
     hideAll();
     focusContainer.innerHTML = "";
     gifDetails.innerHTML = "";
 
     focusContainer.style.display = "flex";
-    resultsContainer.style.display = "none";
     backButton.style.display = "flex";
     gifDetails.style.display = "flex";
 
@@ -140,25 +137,29 @@ function showInFocusContainer(gif) {
     focusContainer.appendChild(img);
     gifDetails.appendChild(gifTitle);
 }
-
-function hideFocusContainer() {
-    backButton.style.display = "none";
-    focusContainer.style.display = "none";
-    gifDetails.style.display = "none";
+function handleScreenChange(e) {
+    if (e.matches) {
+        menuButton.classList.add('menuButton', 'btn');
+        menuButton.classList.remove('hidden');
+        headerButtons.classList.remove('header-buttons');
+        headerButtons.classList.add('hidden');
+        menuVisible = null;
+    } else {
+        menuButton.classList.add('hidden');
+        menuButton.classList.remove('menuButton', 'btn');
+        menuButtons.style.display = 'none';
+        headerButtons.classList.add('header-buttons');
+        headerButtons.classList.remove('hidden');
+        menuVisible = true;
+    }
 }
+handleScreenChange(mediaQuery620);
 
-function goBack() {
-    backButton.style.display = "none";
-    focusContainer.style.display = "none";
-    gifDetails.style.display = "none";
+// =============
+// === Cache ===
+// =============
 
-    resultsContainer.style.display = 'flex';
-
-}
-
-// ==========================
-// === Categories Section ===
-// ==========================
+// Categories
 async function cacheCategories() {
     if (!cachedCategories) {
         try {
@@ -173,12 +174,37 @@ async function cacheCategories() {
         }
     }
 }
+async function initCategories() {
+    await cacheCategories();
+    renderCategories(cachedCategories);
+}
+initCategories();
 
+// Featured
+async function cacheFeatured() {
+    if (!cachedFeatured) {
+        try {
+            const data = await fetch(
+                `https://api.giphy.com/v1/gifs/trending?api_key=${apiKey}&limit=20&offset=0&rating=g&bundle=messaging_non_clips`
+            );
+            const response = await data.json();
+            cachedFeatured = response.data;
+        } catch (error) {
+            console.error("Error fetching featured:", error);
+            return;
+        }
+    }
+}
+cacheFeatured();
+// ==========================
+// === Categories Section ===
+// ==========================
 async function categoriesButtonClick() {
     // Toggle off
     if (categoriesVisible) {
         searchToggle()
-        categoryContainer.innerHTML = '';
+        titleContainer.style.display = "none";
+        categoryContainer.style.display = 'none';
         categoriesVisible = false;
         menuButtons.style.display = 'none';
         menuVisible = null;
@@ -186,20 +212,18 @@ async function categoriesButtonClick() {
     } else if (searchBarPos === "body") {
         searchToggle()
     }
-    await cacheCategories();
-    resultsContainer.innerHTML = '';
-    renderCategories(cachedCategories);
+    hideFocusContainer()
+    categoryContainer.style.display = "grid";
     categoriesVisible = true;
     featuredVisible = false;
+
+    resultsContainer.innerHTML = "";
+    titleContainer.style.display = "flex";
+    titleContainer.innerHTML = "<h1>Categories</h1>"
+
 }
 
 function renderCategories(categories) {
-    resultsContainer.innerHTML = "";
-    resultsContainer.style.display = "flex";
-    titleContainer.style.display = "flex";
-    titleContainer.innerHTML = "<h1>Categories</h1>"
-    hideFocusContainer()
-
     categories.forEach((cat) => {
         const catItem = document.createElement("li");
         catItem.classList.add("category-item");
@@ -239,14 +263,15 @@ function renderCategories(categories) {
             if (e.target === catItem || e.target === catImg || e.target === catLabel) {
                 // Clear all categories
                 focusContainer.innerHTML = '';
-                categoryContainer.innerHTML = "";
+                categoryContainer.style.display = "none";
 
                 const backBtn = document.createElement("p");
                 backBtn.textContent = "back";
                 backBtn.classList.add("category-back-btn");
                 backBtn.addEventListener("click", () => {
-                    renderCategories(cachedCategories);
-
+                    categoryContainer.style.display = "grid";
+                    focusContainer.style.display = "none";
+                    focusContainer.innerHTML = '';
                 });
 
                 // Show only this category
@@ -268,8 +293,6 @@ function renderCategories(categories) {
         catItem.appendChild(catImg);
         catItem.appendChild(catLabel);
         catItem.appendChild(subBox);
-        //catItem.appendChild(subBox); //Add subBox to catItem
-        // subBox.appendChild(subList); //Add subList to subBox
 
         categoryContainer.appendChild(catItem);
     });
@@ -278,26 +301,12 @@ function renderCategories(categories) {
 // ========================
 // === Featured Section ===
 // ========================
-async function cacheFeatured() {
-    if (!cachedFeatured) {
-        try {
-            const data = await fetch(
-                `https://api.giphy.com/v1/gifs/trending?api_key=${apiKey}&limit=20&offset=0&rating=g&bundle=messaging_non_clips`
-            );
-            const response = await data.json();
-            cachedFeatured = response.data;
-        } catch (error) {
-            console.error("Error fetching featured:", error);
-            return;
-        }
-    }
-}
-
 async function featuredButtonClick() {
     //Toggle off
     if (featuredVisible) {
         searchToggle()
-        resultsContainer.innerHTML = '';
+        titleContainer.style.display = 'none';
+        resultsContainer.style.display = 'none';
         featuredVisible = false;
         menuButtons.style.display = 'none';
         menuVisible = null;
@@ -305,19 +314,23 @@ async function featuredButtonClick() {
     } else if (searchBarPos === "body") {
         searchToggle()
     }
-    await cacheFeatured();
-    categoryContainer.innerHTML = '';
-    renderFeatured(cachedFeatured);
+    prepareFeatured()
     featuredVisible = true;
     categoriesVisible = false;
+
+    titleContainer.style.display = "flex";
+    titleContainer.innerHTML = "<h1>Featured</h1>"
+    renderFeatured(cachedFeatured);
+}
+
+function prepareFeatured() {
+    hideAll()
+    resultsContainer.innerHTML = "";
+    resultsContainer.style.display = "flex";
 }
 
 function renderFeatured(featured) {
-    resultsContainer.innerHTML = "";
-    resultsContainer.style.display = "flex";
-    titleContainer.style.display = "flex";
-    titleContainer.innerHTML = "<h1>Featured</h1>"
-    hideFocusContainer()
+
 
     featured.forEach((feat) => {
         const featImg = document.createElement("img");
@@ -350,7 +363,7 @@ function displayResults(gifs, query) {
     hideAll();
     titleContainer.style.display = "flex";
     titleContainer.innerHTML = `<h1>${query}</h1>`;
-    categoryContainer.innerHTML = "";
+    categoryContainer.style.display = 'none';
     resultsContainer.innerHTML = ""; // Clear previous results
     resultsContainer.style.display = "flex";
     gifs.forEach((gif) => {
@@ -390,10 +403,3 @@ menuSearchButton.addEventListener("click", () => {
         searchGifs(query);
     }
 });
-
-// ==================
-// === Load Cache ===
-// ==================
-
-cacheFeatured()
-cacheCategories()
