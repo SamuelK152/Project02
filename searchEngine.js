@@ -330,8 +330,6 @@ function prepareFeatured() {
 }
 
 function renderFeatured(featured) {
-
-
     featured.forEach((feat) => {
         const featImg = document.createElement("img");
         featImg.src = feat.images.fixed_height.url;
